@@ -26,8 +26,13 @@
     "@biomejs/biome": "1.9.4",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@types/node": "^22.14.0",
+    "@types/svg2ttf": "^5.0.3",
     "tsup": "^8.4.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "svg2ttf": "^6.0.3",
+    "ttf2woff2": "^6.0.1"
   }
 }
