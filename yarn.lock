@@ -534,6 +534,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thednp/dommatrix@npm:^2.0.11":
+  version: 2.0.11
+  resolution: "@thednp/dommatrix@npm:2.0.11"
+  checksum: 10c0/08a8e881b4d1a892a295f83b145a1891ca90ff292dba260ce5a5db1d3b3d7b223ea6d24d85787de94054fbf5c7f2313f956ba623c08af3b2dcf506b8f5fc5d63
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:1.0.7":
   version: 1.0.7
   resolution: "@types/estree@npm:1.0.7"
@@ -1916,6 +1923,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"svg-path-commander@npm:^2.1.10":
+  version: 2.1.10
+  resolution: "svg-path-commander@npm:2.1.10"
+  dependencies:
+    "@thednp/dommatrix": "npm:^2.0.11"
+  checksum: 10c0/4d9747a323d5dbb7fe96bd2114b311b2d58f0d5a3e6113797e23c654de9d30bcb5e55f040694bf27b89a78a4165ed50f084efb8632e851153a83104694a35349
+  languageName: node
+  linkType: hard
+
 "svg2ttf@npm:^6.0.3":
   version: 6.0.3
   resolution: "svg2ttf@npm:6.0.3"
@@ -1940,6 +1956,7 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^6.7.2"
     "@types/node": "npm:^22.14.0"
     "@types/svg2ttf": "npm:^5.0.3"
+    svg-path-commander: "npm:^2.1.10"
     svg2ttf: "npm:^6.0.3"
     tsup: "npm:^8.4.0"
     tsx: "npm:^4.19.3"

@@ -32,6 +32,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "svg-path-commander": "^2.1.10",
     "svg2ttf": "^6.0.3",
     "ttf2woff2": "^6.0.1"
   }

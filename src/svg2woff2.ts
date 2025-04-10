@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import SVGPathCommander from "svg-path-commander";
 import svg2ttf from "svg2ttf";
 import ttf2woff2 from "ttf2woff2";
 
@@ -60,6 +61,20 @@ export function svgFilesToSvgFont(svg_files: string[], opt: { base_dir: string }
 }
 
 /**
+ * Transform SVG path for correct font orientation using svg-path-commander
+ * @param path Original SVG path
+ * @returns Transformed path
+ */
+function transformSvgPath(path: string): string {
+    try {
+        return new SVGPathCommander(path).flipY().toString();
+    } catch (error) {
+        console.error("Error transforming SVG path:", error);
+        return path;
+    }
+}
+
+/**
  * Parse an SVG file to extract path and viewBox information
  * @param svgContent SVG file content
  * @param name SVG name
@@ -78,7 +93,21 @@ function parseSvgFile(
         // Extract path data
         const pathMatch = svgContent.match(/<path[^>]*d=['"]([^'"]+)['"]/);
         if (!pathMatch) {
-            console.error(`No path found in SVG file: ${name}`);
+            // If no path is found, try to find other SVG elements and convert them to path
+            console.warn(`No direct path found in SVG file: ${name}, trying to extract from other elements`);
+
+            // Try to find rect, circle, ellipse, polygon elements - this is simplified
+            // For production, consider using SVGO or another SVG processing library
+
+            // Just an example for rect elements
+            const rectMatch = svgContent.match(/<rect[^>]*\/>/);
+            if (rectMatch) {
+                // Extract attributes and convert to path - simplified example
+                console.warn(`Found rect element in ${name}, but direct conversion is not implemented`);
+                // In production, implement proper conversion of rect to path
+            }
+
+            console.error(`No convertible elements found in SVG file: ${name}`);
             return null;
         }
 
@@ -128,15 +157,31 @@ function generateSvgFont(
       />
       <missing-glyph horiz-adv-x="${fontUnitsPerEm}" />
       ${glyphs
-          .map(
-              (glyph) => `
+          .map((glyph) => {
+              try {
+                  // Transform path to correct font orientation
+                  // Apply scale(-1, -1) and translate to correct position
+                  const transformedPath = transformSvgPath(glyph.path);
+
+                  return `
+      <glyph 
+        glyph-name="${glyph.name}" 
+        unicode="${glyph.unicode}" 
+        horiz-adv-x="${glyph.width}" 
+        d="${transformedPath}"
+      />`;
+              } catch (error) {
+                  console.error(`Error processing glyph ${glyph.name}:`, error);
+                  // Fallback to original path if transformation fails
+                  return `
       <glyph 
         glyph-name="${glyph.name}" 
         unicode="${glyph.unicode}" 
         horiz-adv-x="${glyph.width}" 
         d="${glyph.path}"
-      />`,
-          )
+      />`;
+              }
+          })
           .join("")}
     </font>
   </defs>
