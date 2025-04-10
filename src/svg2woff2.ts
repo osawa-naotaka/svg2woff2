@@ -26,12 +26,12 @@ export interface Svg {
 }
 
 /**
- * Convert SVG files to SVG font
- * @param svg_files Array of SVG file names without extension
+ * Convert SVG strings to SVG font
+ * @param svgs Array of SVG strings
  * @param opt Options including base directory
  * @returns SVG font as string
  */
-export async function svgFilesToSvgFont(svgs: Svg[]): Promise<string> {
+export async function svgsToSvgFont(svgs: Svg[]): Promise<string> {
     const glyphs: Array<{
         path: string;
         name: string;
@@ -41,10 +41,10 @@ export async function svgFilesToSvgFont(svgs: Svg[]): Promise<string> {
         viewBox: { minX: number; minY: number; width: number; height: number };
     }> = [];
 
-    // Process each SVG file
+    // Process each SVG strings
     for (let i = 0; i < svgs.length; i++) {
         // Parse SVG content
-        const svgInfo = await parseSvgFile(svgs[i].content, svgs[i].name);
+        const svgInfo = await parseSvg(svgs[i].content, svgs[i].name);
         if (svgInfo) {
             // Add unicode value (starting from e000)
             const unicodeChar = String.fromCodePoint(0xe000 + i);
@@ -81,12 +81,12 @@ function transformSvgPath(path: string): string {
 }
 
 /**
- * Parse an SVG file to extract path and viewBox information using svgson
- * @param svgContent SVG file content
+ * Parse an SVG string to extract path and viewBox information using svgson
+ * @param svgContent SVG content
  * @param name SVG name
  * @returns Object containing path and viewBox information
  */
-async function parseSvgFile(
+async function parseSvg(
     svgContent: string,
     name: string,
 ): Promise<{ path: string; viewBox: { minX: number; minY: number; width: number; height: number } } | null> {
@@ -121,7 +121,7 @@ async function parseSvgFile(
                     node.children.forEach(processElements);
                 }
             } catch (error) {
-                console.error(`Error processing element ${node.name} in SVG file ${name}:`, error);
+                console.error(`Error processing element ${node.name} in SVG ${name}:`, error);
             }
         }
 
@@ -129,7 +129,7 @@ async function parseSvgFile(
         processElements(svgJson);
 
         if (paths.length === 0) {
-            console.warn(`No convertible elements found in SVG file: ${name}`);
+            console.warn(`No convertible elements found in SVG: ${name}`);
             return null;
         }
 
@@ -141,7 +141,7 @@ async function parseSvgFile(
             viewBox: { minX, minY, width, height },
         };
     } catch (error) {
-        console.error(`Error parsing SVG file ${name}:`, error);
+        console.error(`Error parsing SVG ${name}:`, error);
         return null;
     }
 }
@@ -280,16 +280,16 @@ export function generateCss(opt: GenerateCssOptions): string {
 }
 
 /**
- * Convert SVG files to WOFF2 and generate CSS
- * @param svg_files Array of SVG file names without extension
+ * Convert SVG strings to WOFF2 and generate CSS
+ * @param svgs Array of SVG strings
  * @param opt Options for conversion
  * @returns Object containing WOFF2 buffer and CSS string
  */
 export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<{ woff2: Buffer; css: string }> {
     const { version, description, url, font_family, output_file } = opt;
 
-    // Step 1: Convert SVG files to SVG font
-    const svgFontString = await svgFilesToSvgFont(svgs);
+    // Step 1: Convert SVG strings to SVG font
+    const svgFontString = await svgsToSvgFont(svgs);
 
     // Step 2: Convert SVG font to TTF
     const ttfBuffer = svg2ttf(svgFontString, { version, description, url }).buffer;
