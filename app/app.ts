@@ -11,7 +11,7 @@ const font_family = "hanabi generated font";
 const output_file = "hf-builtin-400.woff2";
 const svg_files = ["youtube", "github", "x-twitter"];
 
-const { woff2, css } = svg2woff2(svg_files, { base_dir, font_family, output_file });
+const { woff2, css } = await svg2woff2(svg_files, { base_dir, font_family, output_file });
 
 console.log(`Test PASSED for generateWoff2(): Buffer size = ${woff2.length}`);
 console.log("Generated WOFF2 Data (base64):", woff2.toString("base64"));
