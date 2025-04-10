@@ -18,8 +18,8 @@
     "dev": "tsx ./app/app.ts",
     "watch": "tsx watch ./app/app.ts",
     "build": "tsc && tsup --config tsup.config.ts",
-    "check": "biome check ./src ./app",
-    "check-write": "biome check --write ./src ./app"
+    "check": "biome check ./src ./types ./app",
+    "check-write": "biome check --write ./src ./types ./app"
   },
   "packageManager": "yarn@4.8.0",
   "devDependencies": {

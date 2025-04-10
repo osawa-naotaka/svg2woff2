@@ -1,9 +1,10 @@
 /.vscode
 /.yarn
 /app
+/build
 /node_modules
 /src
-/test
+/types
 .editorconfig
 .gitattributes
 .pnp*

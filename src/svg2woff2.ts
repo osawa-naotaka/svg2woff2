@@ -1,22 +1,28 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import elementToPath from "element-to-path";
 import SVGPathCommander from "svg-path-commander";
 import svg2ttf from "svg2ttf";
 import { parse as svgsonParse, stringify as svgsonStringify } from "svgson";
 import type { INode } from "svgson";
 import ttf2woff2 from "ttf2woff2";
 
-interface Svg2Woff2Options {
-    base_dir: string;
+export interface Svg2Woff2Options {
     font_family: string;
     output_file: string;
+    version: string;
+    description: string;
+    url: string;
 }
 
 interface GenerateCssOptions {
     font_family: string;
     url: string;
-    glyphs: string[];
+    glyphs: Svg[];
     unicode_base: number;
+}
+
+export interface Svg {
+    name: string;
+    content: string;
 }
 
 /**
@@ -25,7 +31,7 @@ interface GenerateCssOptions {
  * @param opt Options including base directory
  * @returns SVG font as string
  */
-export async function svgFilesToSvgFont(svg_files: string[], opt: { base_dir: string }): Promise<string> {
+export async function svgFilesToSvgFont(svgs: Svg[]): Promise<string> {
     const glyphs: Array<{
         path: string;
         name: string;
@@ -36,20 +42,16 @@ export async function svgFilesToSvgFont(svg_files: string[], opt: { base_dir: st
     }> = [];
 
     // Process each SVG file
-    for (let i = 0; i < svg_files.length; i++) {
-        const filename = svg_files[i];
-        const filepath = path.join(opt.base_dir, `${filename}.svg`);
-        const svgContent = readFileSync(filepath, "utf8");
-
+    for (let i = 0; i < svgs.length; i++) {
         // Parse SVG content
-        const svgInfo = await parseSvgFile(svgContent, filename);
+        const svgInfo = await parseSvgFile(svgs[i].content, svgs[i].name);
         if (svgInfo) {
             // Add unicode value (starting from e000)
             const unicodeChar = String.fromCodePoint(0xe000 + i);
 
             glyphs.push({
                 path: svgInfo.path,
-                name: filename,
+                name: svgs[i].name,
                 unicode: unicodeChar,
                 width: svgInfo.viewBox.width,
                 height: svgInfo.viewBox.height,
@@ -63,15 +65,17 @@ export async function svgFilesToSvgFont(svg_files: string[], opt: { base_dir: st
 }
 
 /**
- * Transform SVG path for correct font orientation using svg-path-commander
+ * Transform SVG path for correct font orientation using SVGPathCommander
  * @param path Original SVG path
  * @returns Transformed path
  */
 function transformSvgPath(path: string): string {
     try {
+        // Use SVGPathCommander to flip the path vertically
         return new SVGPathCommander(path).flipY().toString();
     } catch (error) {
         console.error("Error transforming SVG path:", error);
+        // Return original path if transformation fails
         return path;
     }
 }
@@ -94,25 +98,38 @@ async function parseSvgFile(
         const viewBoxStr = svgJson.attributes.viewBox || "0 0 1000 1000";
         const [minX, minY, width, height] = viewBoxStr.split(" ").map(Number);
 
-        // Find all path elements
+        // Process all SVG elements to paths
         const paths: string[] = [];
 
-        // Recursive function to find all path elements
-        function findPaths(node: INode) {
-            if (node.name === "path" && node.attributes.d) {
-                paths.push(node.attributes.d);
-            }
+        // Recursive function to process all elements
+        function processElements(node: INode) {
+            try {
+                // If it's a path element, add its data directly
+                if (node.name === "path" && node.attributes.d) {
+                    paths.push(node.attributes.d);
+                }
+                // If it's another SVG shape element, convert it to a path
+                else if (["rect", "circle", "ellipse", "line", "polygon", "polyline"].includes(node.name)) {
+                    const pathData = elementToPath(node);
+                    if (pathData) {
+                        paths.push(pathData);
+                    }
+                }
 
-            if (node.children && node.children.length > 0) {
-                node.children.forEach(findPaths);
+                // Process children
+                if (node.children && node.children.length > 0) {
+                    node.children.forEach(processElements);
+                }
+            } catch (error) {
+                console.error(`Error processing element ${node.name} in SVG file ${name}:`, error);
             }
         }
 
-        // Start searching from root
-        findPaths(svgJson);
+        // Start processing from root
+        processElements(svgJson);
 
         if (paths.length === 0) {
-            console.warn(`No path elements found in SVG file: ${name}`);
+            console.warn(`No convertible elements found in SVG file: ${name}`);
             return null;
         }
 
@@ -127,6 +144,23 @@ async function parseSvgFile(
         console.error(`Error parsing SVG file ${name}:`, error);
         return null;
     }
+}
+
+/**
+ * Helper function to create an element node
+ * @param e_name Element name
+ * @param attributes Element attributes
+ * @param children Child elements
+ * @returns INode object
+ */
+function element(e_name: string, attributes: Record<string, string>, ...children: INode[]): INode {
+    return {
+        name: e_name,
+        type: "element",
+        value: "",
+        attributes,
+        children,
+    };
 }
 
 /**
@@ -179,7 +213,7 @@ async function generateSvgFont(
     // Add each glyph to the font
     for (const glyph of glyphs) {
         try {
-            // Transform path for correct font orientation using svg-path-commander
+            // Transform path for correct font orientation
             const transformedPath = transformSvgPath(glyph.path);
 
             // Create glyph element
@@ -194,7 +228,6 @@ async function generateSvgFont(
             fontElement.children.push(glyphElement);
         } catch (error) {
             console.error(`Error processing glyph ${glyph.name}:`, error);
-
             // Add glyph with original path as fallback
             const fallbackGlyphElement = element("glyph", {
                 "glyph-name": glyph.name,
@@ -216,16 +249,6 @@ async function generateSvgFont(
         '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n';
 
     return xmlDeclaration + doctype + svgString;
-}
-
-function element(e_name: string, attributes: Record<string, string>, ...children: INode[]): INode {
-    return {
-        name: e_name,
-        type: "element",
-        value: "",
-        attributes,
-        children,
-    };
 }
 
 /**
@@ -250,7 +273,7 @@ export function generateCss(opt: GenerateCssOptions): string {
     // Add CSS for each glyph
     glyphs.forEach((glyph, index) => {
         const unicodePoint = unicode_base + index;
-        css += `.hf-${glyph} { --hf: "\\${unicodePoint.toString(16)}"; }\n`;
+        css += `.hf-${glyph.name} { --hf: "\\${unicodePoint.toString(16)}"; }\n`;
     });
 
     return css;
@@ -262,29 +285,24 @@ export function generateCss(opt: GenerateCssOptions): string {
  * @param opt Options for conversion
  * @returns Object containing WOFF2 buffer and CSS string
  */
-export async function svg2woff2(svg_files: string[], opt: Svg2Woff2Options): Promise<{ woff2: Buffer; css: string }> {
-    const { base_dir, font_family, output_file } = opt;
+export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<{ woff2: Buffer; css: string }> {
+    const { version, description, url, font_family, output_file } = opt;
 
     // Step 1: Convert SVG files to SVG font
-    const svgFontString = await svgFilesToSvgFont(svg_files, { base_dir });
+    const svgFontString = await svgFilesToSvgFont(svgs);
 
     // Step 2: Convert SVG font to TTF
-    const ttfBuffer = svg2ttf(svgFontString, {
-        version: "1.0",
-        description: "Font generated by svg2woff2",
-        url: "https://github.com/osawa-naotaka/svg2woff2",
-    }).buffer;
+    const ttfBuffer = svg2ttf(svgFontString, { version, description, url }).buffer;
 
     // Step 3: Convert TTF to WOFF2
     const ttfBufferForWoff2 = Buffer.from(ttfBuffer);
     const woff2Buffer = ttf2woff2(ttfBufferForWoff2);
 
     // Step 4: Generate CSS
-    const url = path.basename(output_file);
     const css = generateCss({
         font_family,
-        url,
-        glyphs: svg_files,
+        url: output_file,
+        glyphs: svgs,
         unicode_base: 0xe000,
     });
 
