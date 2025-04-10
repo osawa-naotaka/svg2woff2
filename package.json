@@ -1,4 +1,33 @@
 {
   "name": "svg2woff2",
-  "packageManager": "yarn@4.8.0"
+  "version": "0.1.0",
+  "description": "generate woff2 font from svg files",
+  "main": "dist/svg2woff2.js",
+  "types": "dist/svg2woff2.d.ts",
+  "author": {
+    "name": "osawa naotaka"
+  },
+  "license": "MIT",
+  "homepage": "https://svg2woff2.lulliecat.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osawa-naotaka/svg2woff2.git"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "tsx ./app/app.ts",
+    "watch": "tsx watch ./app/app.ts",
+    "build": "tsc && tsup --config tsup.config.ts",
+    "check": "biome check ./src ./app",
+    "check-write": "biome check --write ./src ./app"
+  },
+  "packageManager": "yarn@4.8.0",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@types/node": "^22.14.0",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
 }

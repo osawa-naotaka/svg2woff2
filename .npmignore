@@ -1,0 +1,15 @@
+/.vscode
+/.yarn
+/app
+/node_modules
+/src
+/test
+.editorconfig
+.gitattributes
+.pnp*
+biome.json
+bun.lock
+flake.nix
+flake.lock
+tsconfig.json
+tsup.config.ts
