@@ -1,6 +1,7 @@
 import { createRequire } from "node:module";
 import path from "node:path";
 import { svg2woff2 } from "../src/main";
+import { writeFileSync } from "node:fs";
 
 const require = createRequire(import.meta.url);
 
@@ -14,3 +15,6 @@ const { woff2, css } = svg2woff2(svg_files, { base_dir, font_family, output_file
 console.log(`Test PASSED for generateWoff2(): Buffer size = ${woff2.length}`);
 console.log("Generated WOFF2 Data (base64):", woff2.toString("base64"));
 console.log("Generated CSS:", css);
+
+writeFileSync(output_file, woff2);
+writeFileSync("font.css", css);
