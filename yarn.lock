@@ -639,10 +639,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"argparse@npm:^1.0.2":
+  version: 1.0.10
+  resolution: "argparse@npm:1.0.10"
+  dependencies:
+    sprintf-js: "npm:~1.0.2"
+  checksum: 10c0/b2972c5c23c63df66bca144dbc65d180efa74f25f8fd9b7d9a0a6c88ae839db32df3d54770dcb6460cf840d232b60695d1a6b1053f599d84e73f7437087712de
+  languageName: node
+  linkType: hard
+
 "argparse@npm:^2.0.1":
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 10c0/c5640c2d89045371c7cedd6a70212a04e360fd34d6edeae32f6952c63949e3525ea77dbec0289d8213a99bbaeab5abfa860b5c12cf88a2e6cf8106e90dd27a7e
+  languageName: node
+  linkType: hard
+
+"argparse@npm:~ 0.1.15, argparse@npm:~0.1.15":
+  version: 0.1.16
+  resolution: "argparse@npm:0.1.16"
+  dependencies:
+    underscore: "npm:~1.7.0"
+    underscore.string: "npm:~2.4.0"
+  checksum: 10c0/fbd081b942546b481cfec863778baa09af2224eaea6b2af086fd1e39b9ca3159585ee50bf066c6feff17fe991baea16f45054d226430ec83f5d5aad6d8f2d781
   languageName: node
   linkType: hard
 
@@ -1009,6 +1028,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"font-carrier@npm:0.0.12":
+  version: 0.0.12
+  resolution: "font-carrier@npm:0.0.12"
+  dependencies:
+    jdataview: "npm:2.5.0"
+    lodash: "npm:3.7.0"
+    multiline: "npm:1.0.2"
+    opentype.js: "npm:0.4.8"
+    svg2ttf: "npm:2.0.0"
+    svg_pathify: "npm:0.0.x"
+    svgpath: "npm:2.0.0"
+    ttf2eot: "npm:1.3.0"
+    ttf2svg: "npm:0.0.7"
+    ttf2woff: "npm:1.3.0"
+    xmldom: "npm:0.1.19"
+  checksum: 10c0/46b046515a2e3c114894bc76922079fd3af77db391f00eb90e27bcf7a153b36c6a8c67a334641d3a88f1a848d2c909f5adac02c55a7b47c7a096c621df992b80
+  languageName: node
+  linkType: hard
+
 "foreground-child@npm:^3.1.0":
   version: 3.3.1
   resolution: "foreground-child@npm:3.3.1"
@@ -1053,6 +1091,13 @@ __metadata:
   dependencies:
     node-gyp: "npm:latest"
   conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"get-stdin@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "get-stdin@npm:4.0.1"
+  checksum: 10c0/68fc39a0af6050bcad791fb3df72999e7636401f11f574bf24af07b1c640d30c01cf38aa39ee55665a93ee7a7753eeb6d1fce6c434dd1f458ee0f8fd02775809
   languageName: node
   linkType: hard
 
@@ -1203,6 +1248,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jdataview@npm:2.5.0":
+  version: 2.5.0
+  resolution: "jdataview@npm:2.5.0"
+  checksum: 10c0/8112d8e4dd63749ec827bb3630f23702f6190b6ee92caa63dd1607800770b3830d72badf8614913155ff367ee9a6268fc21f937848ac883fc2647586d9034746
+  languageName: node
+  linkType: hard
+
 "joycon@npm:^3.1.1":
   version: 3.1.1
   resolution: "joycon@npm:3.1.1"
@@ -1251,6 +1303,27 @@ __metadata:
   version: 4.7.0
   resolution: "lodash.sortby@npm:4.7.0"
   checksum: 10c0/fc48fb54ff7669f33bb32997cab9460757ee99fafaf72400b261c3e10fde21538e47d8cfcbe6a25a31bcb5b7b727c27d52626386fc2de24eb059a6d64a89cdf5
+  languageName: node
+  linkType: hard
+
+"lodash@npm:3.7.0":
+  version: 3.7.0
+  resolution: "lodash@npm:3.7.0"
+  checksum: 10c0/555eb9189f359ddf8bb99da9452f2d3bd6b15103c852a3cd9cb62db32ef05acd5919c9ed0032f3b3f065a881fdca92889fadcab6e9eb8915c4b45a1f7d82a13c
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^2.4.1":
+  version: 2.4.2
+  resolution: "lodash@npm:2.4.2"
+  checksum: 10c0/7c235180b20dc4b66cbf71d2347962798ad0c9669bb446a7098c22c8a37b3a63dc7880a71a91db314e7172de3c8cb5b1549942dfb8249d0b008ea5b66a067eb7
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^3.6.0, lodash@npm:^3.7.0":
+  version: 3.10.1
+  resolution: "lodash@npm:3.10.1"
+  checksum: 10c0/f5f6d3d87503c3f1db27d49b30a00bb38dc1bd9de716c5febe8970259cc7b447149a0e320452ccaf5996a7a4abd63d94df341bb91bd8d336584ad518d8eab144
   languageName: node
   linkType: hard
 
@@ -1456,6 +1529,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multiline@npm:1.0.2":
+  version: 1.0.2
+  resolution: "multiline@npm:1.0.2"
+  dependencies:
+    strip-indent: "npm:^1.0.0"
+  checksum: 10c0/73ab0c2361470ba239d7e969687799f3b5fa7569807e93c9b3b70e73ed5c52e7ae636c3aa94f7a90d46b2717e0340fb2e78c255bf54d32a04b2260f3046c0e50
+  languageName: node
+  linkType: hard
+
 "mz@npm:^2.7.0":
   version: 2.7.0
   resolution: "mz@npm:2.7.0"
@@ -1559,6 +1641,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"opentype.js@npm:0.4.8":
+  version: 0.4.8
+  resolution: "opentype.js@npm:0.4.8"
+  bin:
+    ot: ./bin/ot
+  checksum: 10c0/7509c50a7c44b66c3563d5f3db422a564c64be8480d007e4118e61d47ba9f7aa1c794ad5f171021f91cea1e68ad19f0ae4f096ecdb08192bc0c2aaf6a81515ec
+  languageName: node
+  linkType: hard
+
 "p-map@npm:^4.0.0":
   version: 4.0.0
   resolution: "p-map@npm:4.0.0"
@@ -1579,6 +1670,13 @@ __metadata:
   version: 1.0.1
   resolution: "package-json-from-dist@npm:1.0.1"
   checksum: 10c0/62ba2785eb655fec084a257af34dbe24292ab74516d6aecef97ef72d4897310bc6898f6c85b5cd22770eaa1ce60d55a0230e150fb6a966e3ecd6c511e23d164b
+  languageName: node
+  linkType: hard
+
+"pako@npm:~ 0.2.2":
+  version: 0.2.9
+  resolution: "pako@npm:0.2.9"
+  checksum: 10c0/79c1806ebcf325b60ae599e4d7227c2e346d7b829dc20f5cf24cef07c934079dc3a61c5b3c8278a2f7a190c4a613e343ea11e5302dbe252efd11712df4b6b041
   languageName: node
   linkType: hard
 
@@ -1885,6 +1983,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sprintf-js@npm:~1.0.2":
+  version: 1.0.3
+  resolution: "sprintf-js@npm:1.0.3"
+  checksum: 10c0/ecadcfe4c771890140da5023d43e190b7566d9cf8b2d238600f31bec0fc653f328da4450eb04bd59a431771a8e9cc0e118f0aa3974b683a4981b4e07abc2a5bb
+  languageName: node
+  linkType: hard
+
 "ssri@npm:^10.0.0":
   version: 10.0.6
   resolution: "ssri@npm:10.0.6"
@@ -1952,6 +2057,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"strip-indent@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "strip-indent@npm:1.0.1"
+  dependencies:
+    get-stdin: "npm:^4.0.1"
+  bin:
+    strip-indent: cli.js
+  checksum: 10c0/671370d44105b63daf4582a42f0a0168d58a351f6558eb913d1ede05d0ad5f964548b99f15c63fa6c7415c3980aad72f28c62997fd98fbb6da2eee1051d3c21a
+  languageName: node
+  linkType: hard
+
 "sucrase@npm:^3.35.0":
   version: 3.35.0
   resolution: "sucrase@npm:3.35.0"
@@ -1976,6 +2092,21 @@ __metadata:
   dependencies:
     "@thednp/dommatrix": "npm:^2.0.11"
   checksum: 10c0/4d9747a323d5dbb7fe96bd2114b311b2d58f0d5a3e6113797e23c654de9d30bcb5e55f040694bf27b89a78a4165ed50f084efb8632e851153a83104694a35349
+  languageName: node
+  linkType: hard
+
+"svg2ttf@npm:2.0.0":
+  version: 2.0.0
+  resolution: "svg2ttf@npm:2.0.0"
+  dependencies:
+    argparse: "npm:^1.0.2"
+    lodash: "npm:^3.6.0"
+    microbuffer: "npm:^1.0.0"
+    svgpath: "npm:~2.0.0"
+    xmldom: "npm:~0.1.16"
+  bin:
+    svg2ttf: ./svg2ttf.js
+  checksum: 10c0/ca8d02968afc0a088729e514eb0913a6db675fb7c9f9c2f21a8dd81fc2ae0f6b55243d2318f280ad4bfbdaabc44522ce2d9db9ab745913b8372b15b54ccb7810
   languageName: node
   linkType: hard
 
@@ -2009,10 +2140,28 @@ __metadata:
     svgson: "npm:^5.3.1"
     tsup: "npm:^8.4.0"
     tsx: "npm:^4.19.3"
+    ttf2svg: "npm:^1.2.0"
     ttf2woff2: "npm:^6.0.1"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
+
+"svg_pathify@npm:0.0.x":
+  version: 0.0.8
+  resolution: "svg_pathify@npm:0.0.8"
+  dependencies:
+    lodash: "npm:^3.7.0"
+    xmldom: "npm:^0.1.19"
+  checksum: 10c0/3a0c9206dadf45ee18663b3afbc2f936a65d39ac51f7bbfd416bdd08776cdb3a6702c4c58e1356f94705a6fdd92cf64dcb669e24092f2b911773318b7a470075
+  languageName: node
+  linkType: hard
+
+"svgpath@npm:2.0.0, svgpath@npm:~2.0.0":
+  version: 2.0.0
+  resolution: "svgpath@npm:2.0.0"
+  checksum: 10c0/0d4a7cadfffd9df61527d2b5919732a60da497e572163963b4e6a648821af50811ccfbb21b0c3a49789a170aa23839392b97c88d5beb2ef6f1a9612cbf27359d
+  languageName: node
+  linkType: hard
 
 "svgpath@npm:^2.1.5":
   version: 2.6.0
@@ -2176,6 +2325,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ttf2eot@npm:1.3.0":
+  version: 1.3.0
+  resolution: "ttf2eot@npm:1.3.0"
+  dependencies:
+    argparse: "npm:~0.1.15"
+  bin:
+    ttf2eot: ./ttf2eot.js
+  checksum: 10c0/0c40a0d01d9faa27aecd2114a9bfe84684e3abf174b157be32b2c54aa3d1117bac86d4dcce755229011890dc38bf8d45813bca7f567df37c6c80db5b63cced97
+  languageName: node
+  linkType: hard
+
+"ttf2svg@npm:0.0.7":
+  version: 0.0.7
+  resolution: "ttf2svg@npm:0.0.7"
+  dependencies:
+    lodash: "npm:^2.4.1"
+  bin:
+    ttf2svg: bin/ttf2svg.js
+  checksum: 10c0/8cf359ea8b2e60bbf63c8cb3349785ab34bb118fa8f1179410f1f6da3a8b7b688cb7c735e1553ff3a3f13d979c5dbaa4aa535a8bfc918e648808745217a48135
+  languageName: node
+  linkType: hard
+
+"ttf2svg@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "ttf2svg@npm:1.2.0"
+  dependencies:
+    font-carrier: "npm:0.0.12"
+  bin:
+    ttf2svg: bin/ttf2svg.js
+  checksum: 10c0/99dc9a7bb80a9cc2f0406cefe23d7cf203d6580be0e1b25230cd8def05213dea4ea84e359e7c8c140bb6297aad09e71a037f8e8d8c96b60351f658f2b9c9be53
+  languageName: node
+  linkType: hard
+
 "ttf2woff2@npm:^6.0.1":
   version: 6.0.1
   resolution: "ttf2woff2@npm:6.0.1"
@@ -2189,6 +2371,18 @@ __metadata:
   bin:
     ttf2woff2: bin/ttf2woff2.js
   checksum: 10c0/45ea7e0482af7d38211c2812c38a8466f72d94597d97e9f57e31f1c0505ba7f5f75f225aab69aa1a25e2e60918dbf1511b2724ba1835b958e492a9cb2328cef4
+  languageName: node
+  linkType: hard
+
+"ttf2woff@npm:1.3.0":
+  version: 1.3.0
+  resolution: "ttf2woff@npm:1.3.0"
+  dependencies:
+    argparse: "npm:~ 0.1.15"
+    pako: "npm:~ 0.2.2"
+  bin:
+    ttf2woff: ./ttf2woff.js
+  checksum: 10c0/2d11f7def36aa76ffdb09e58aedf2312babf3dad41d9771724b49e39c543d44105f78fdfb61bcc97f37a03362c15a67cf2b9666804b7f4963211f9f9a1256052
   languageName: node
   linkType: hard
 
@@ -2209,6 +2403,20 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/39117e346ff8ebd87ae1510b3a77d5d92dae5a89bde588c747d25da5c146603a99c8ee588c7ef80faaf123d89ed46f6dbd918d534d641083177d5fac38b8a1cb
+  languageName: node
+  linkType: hard
+
+"underscore.string@npm:~2.4.0":
+  version: 2.4.0
+  resolution: "underscore.string@npm:2.4.0"
+  checksum: 10c0/30a9d096eee6680c27c3bdcc5a81af8f1c8357b5bfdc1dc45e719e842b0db322c2705c61ebf5166d2b41f2cfcc6dbf44e026651d8042bab638a99de15c8ec078
+  languageName: node
+  linkType: hard
+
+"underscore@npm:~1.7.0":
+  version: 1.7.0
+  resolution: "underscore@npm:1.7.0"
+  checksum: 10c0/03d6d187c88031c8bf6fada822f43e956974b87dfd37232960e637dc10036968596b644ba4a65bdf09390493eff121d780e276c016addea6e2b3d5b6dd848696
   languageName: node
   linkType: hard
 
@@ -2351,6 +2559,20 @@ __metadata:
     eventemitter3: "npm:^2.0.0"
     xml-lexer: "npm:^0.2.2"
   checksum: 10c0/b2514806af287800f1cc7756c0d9773ec45ce26acc32f8e23bd22c04eaa18ffe6b05275acc276e291f037f9f9ffd3d65dc9044363f6a087a95a7a1c62428aec2
+  languageName: node
+  linkType: hard
+
+"xmldom@npm:0.1.19":
+  version: 0.1.19
+  resolution: "xmldom@npm:0.1.19"
+  checksum: 10c0/e0634db88f7485285ce0381112b28c2136b6754109e6e0f49576a9e52c2dc6f22f9558cd37126a6f18d15c9da6cd55a546dd223f8e9643326358e3eb38d23da2
+  languageName: node
+  linkType: hard
+
+"xmldom@npm:^0.1.19, xmldom@npm:~0.1.16":
+  version: 0.1.31
+  resolution: "xmldom@npm:0.1.31"
+  checksum: 10c0/7f20d4f0cb314dbdcf86f392690b4323762fe0a57d3fe84a7878da8b9fa651d0d73e3bd7225f97bafb9077cb3627021c05cf9c14ddda507619c6c5940eed3e42
   languageName: node
   linkType: hard
 

@@ -6,15 +6,29 @@ import type { INode } from "svgson";
 import ttf2woff2 from "ttf2woff2";
 
 export interface Svg2Woff2Options {
-    font_family: string;
+    ttf_font_opt: TtfFontParameters;
+    svg_font_opt: SvgFontParameters;
+}
+
+export interface TtfFontParameters {
     version: string;
     description: string;
     url: string;
 }
 
+export interface SvgFontParameters {
+    font_family: string;
+    ascent: number;
+    descent: number;
+    horiz_adv_x: number;
+    vert_adv_y: number;
+    units_per_em: number;
+}
+
 export interface GenerateCssOptions {
     font_family: string;
-    url: string;
+    vertical_align: string;
+    font_url: string;
     unicode_base?: number;
 }
 
@@ -26,10 +40,10 @@ export interface Svg {
 /**
  * Convert SVG strings to SVG font
  * @param svgs Array of SVG strings
- * @param font_family Name of SVG Font
+ * @param opt SVG Font metadata
  * @returns SVG font as string
  */
-export async function svgsToSvgFont(svgs: Svg[], font_family: string): Promise<string> {
+export async function svgsToSvgFont(svgs: Svg[], opt: SvgFontParameters): Promise<string> {
     const glyphs: Array<{
         path: string;
         name: string;
@@ -59,7 +73,7 @@ export async function svgsToSvgFont(svgs: Svg[], font_family: string): Promise<s
     }
 
     // Generate SVG font
-    return generateSvgFont(glyphs, font_family);
+    return generateSvgFont(glyphs, opt);
 }
 
 /**
@@ -164,7 +178,7 @@ function element(e_name: string, attributes: Record<string, string>, ...children
 /**
  * Generate SVG font using svgson for JSON manipulation and transformation
  * @param glyphs Array of glyph information
- * @param font_family Name of SVG Font
+ * @param opt SVG Font metadata
  * @returns SVG font as string
  */
 async function generateSvgFont(
@@ -176,13 +190,8 @@ async function generateSvgFont(
         height: number;
         viewBox: { minX: number; minY: number; width: number; height: number };
     }>,
-    font_family: string,
+    opt: SvgFontParameters,
 ): Promise<string> {
-    // Calculate font metrics
-    const fontAscent = 800;
-    const fontDescent = 200;
-    const fontUnitsPerEm = 1000;
-
     // Create SVG font structure as JSON
     const svgFontJson = element(
         "svg",
@@ -195,14 +204,21 @@ async function generateSvgFont(
             {},
             element(
                 "font",
-                { id: "custom-font", "horiz-adv-x": fontUnitsPerEm.toString() },
+                {
+                    id: "custom-font",
+                    "horiz-adv-x": opt.horiz_adv_x.toString(),
+                    "vert-adv-y": opt.vert_adv_y.toString(),
+                },
                 element("font-face", {
-                    "font-family": font_family,
-                    "units-per-em": fontUnitsPerEm.toString(),
-                    ascent: fontAscent.toString(),
-                    descent: fontDescent.toString(),
+                    "font-family": opt.font_family,
+                    "units-per-em": opt.units_per_em.toString(),
+                    ascent: opt.ascent.toString(),
+                    descent: opt.descent.toString(),
                 }),
-                element("missing-glyph", { "horiz-adv-x": fontUnitsPerEm.toString() }),
+                element("missing-glyph", {
+                    "horiz-adv-x": opt.horiz_adv_x.toString(),
+                    "vert-adv-y": opt.vert_adv_y.toString(),
+                }),
             ),
         ),
     );
@@ -257,9 +273,10 @@ async function generateSvgFont(
  * @returns CSS string
  */
 export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
-    const { font_family, url, unicode_base } = opt;
+    const { font_family, vertical_align, font_url, unicode_base } = opt;
 
-    let css = `@font-face { font-family: '${font_family}'; font-style: normal; font-weight: 400; font-display: block; src: url("${url}") format("woff2"); }
+    let css = `@font-face { font-family: '${font_family}'; font-style: normal; font-weight: 400; font-display: block; src: url("${font_url}") format("woff2"); }
+.hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: ${vertical_align}; }
 .hf::before { content: var(--hf); }
 `;
 
@@ -279,13 +296,11 @@ export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
  * @returns Object containing WOFF2 buffer
  */
 export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffer> {
-    const { version, description, url, font_family } = opt;
-
     // Step 1: Convert SVG strings to SVG font
-    const svgFontString = await svgsToSvgFont(svgs, font_family);
+    const svgFontString = await svgsToSvgFont(svgs, opt.svg_font_opt);
 
     // Step 2: Convert SVG font to TTF
-    const ttfBuffer = svg2ttf(svgFontString, { version, description, url }).buffer;
+    const ttfBuffer = svg2ttf(svgFontString, opt.ttf_font_opt).buffer;
 
     // Step 3: Convert TTF to WOFF2
     const ttfBufferForWoff2 = Buffer.from(ttfBuffer);
