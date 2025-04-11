@@ -276,14 +276,14 @@ export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
     const { font_family, vertical_align, font_url, unicode_base } = opt;
 
     let css = `@font-face { font-family: '${font_family}'; font-style: normal; font-weight: 400; font-display: block; src: url("${font_url}") format("woff2"); }
-@layer main { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: ${vertical_align}; } }
-@layer main { .hf::before { content: var(--hf); } }
+@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: ${vertical_align}; } }
+@layer font { .hf::before { content: var(--hf); } }
 `;
 
     // Add CSS for each glyph
     svgs.forEach((svg, index) => {
         const unicodePoint = (unicode_base || 0xe000) + index;
-        css += `@layer main { .hf-${svg.name} { --hf: "\\${unicodePoint.toString(16)}"; } }\n`;
+        css += `@layer font { .hf-${svg.name} { --hf: "\\${unicodePoint.toString(16)}"; } }\n`;
     });
 
     return css;
