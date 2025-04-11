@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { cwd } from "node:process";
@@ -56,5 +56,9 @@ console.log("Generated CSS:", css);
 
 // write to files
 const output_dir = path.join(cwd(), "build");
+if(existsSync(output_dir) === false) {
+    mkdirSync(output_dir);
+}
+writeFileSync(path.join(output_dir, "hf-builtin-400.woff2"), woff2);
 writeFileSync(path.join(output_dir, css_opt.font_url), woff2);
 writeFileSync(path.join(output_dir, "font.css"), css);
