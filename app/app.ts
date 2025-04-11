@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { cwd } from "node:process";
 import { generateCss, svg2woff2 } from "../src/main";
-import type { GenerateCssOptions, SvgFontParameters, TtfFontParameters } from "../src/svg2woff2";
+import type { GenerateCssOptions, SvgFontParameters, TtfFontParameters } from "../src/main";
 
 const require = createRequire(import.meta.url);
 

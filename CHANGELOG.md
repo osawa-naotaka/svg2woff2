@@ -13,8 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [0.1.0] - 2025-04-11
+## [0.1.0] - 2025-04-12
 ### Added
-- First Implement.
+- First Implementation.
 
 [Unreleased]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.1.0...HEAD
