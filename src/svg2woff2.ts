@@ -1,5 +1,6 @@
 import elementToPath from "element-to-path";
 import SVGPathCommander from "svg-path-commander";
+import type { TransformObject } from "svg-path-commander";
 import svg2ttf from "svg2ttf";
 import { parse as svgsonParse, stringify as svgsonStringify } from "svgson";
 import type { INode } from "svgson";
@@ -20,14 +21,13 @@ export interface SvgFontParameters {
     font_family: string;
     ascent: number;
     descent: number;
-    horiz_adv_x: number;
-    vert_adv_y: number;
     units_per_em: number;
+    offset_y: number;
+    height_decrese: number;
 }
 
 export interface GenerateCssOptions {
     font_family: string;
-    vertical_align: string;
     font_url: string;
     unicode_base?: number;
 }
@@ -48,69 +48,68 @@ export async function svgsToSvgFont(svgs: Svg[], opt: SvgFontParameters): Promis
         path: string;
         name: string;
         unicode: string;
-        width: number;
-        height: number;
-        viewBox: { minX: number; minY: number; width: number; height: number };
     }> = [];
 
-    // Process each SVG strings
     for (let i = 0; i < svgs.length; i++) {
-        // Parse SVG content
-        const svgInfo = await parseSvg(svgs[i].content, svgs[i].name);
-        if (svgInfo) {
-            // Add unicode value (starting from e000)
+        const svgPath = await parseSvg(svgs[i].content, svgs[i].name);
+        if (svgPath) {
             const unicodeChar = String.fromCodePoint(0xe000 + i);
 
             glyphs.push({
-                path: svgInfo.path,
+                path: svgPath,
                 name: svgs[i].name,
                 unicode: unicodeChar,
-                width: svgInfo.viewBox.width,
-                height: svgInfo.viewBox.height,
-                viewBox: svgInfo.viewBox,
             });
         }
     }
 
-    // Generate SVG font
     return generateSvgFont(glyphs, opt);
 }
 
 /**
- * Transform SVG path for correct font orientation using SVGPathCommander
+ * Normalize SVG path for correct font orientation and size using SVGPathCommander
  * @param path Original SVG path
- * @returns Transformed path
+ * @param height SVG path hight to scale
+ * @returns Normalized path and its width
  */
-function transformSvgPath(path: string): string {
-    try {
-        // Use SVGPathCommander to flip the path vertically
-        return new SVGPathCommander(path).flipY().toString();
-    } catch (error) {
-        console.error("Error transforming SVG path:", error);
-        // Return original path if transformation fails
-        return path;
-    }
+type NormalizedSvgPath = {
+    path: string;
+    width: number;
+};
+
+function normalizeSvgPath(path: string, height: number, offset_y: number, height_decrese: number): NormalizedSvgPath {
+    const fliped = new SVGPathCommander(path).flipY();
+    const size = fliped.getBBox();
+    const scale_y = (height - height_decrese) / size.height;
+    const translate: Partial<TransformObject> = {
+        translate: [-size.x, -size.y],
+    };
+    const scale: Partial<TransformObject> = {
+        scale: [scale_y, scale_y],
+    };
+    const post_translate: Partial<TransformObject> = {
+        translate: [0, offset_y],
+    };
+
+    const processed = fliped.transform(translate).transform(scale).transform(post_translate);
+    const processed_size = processed.getBBox();
+
+    return {
+        path: processed.toString(),
+        width: processed_size.width,
+    };
 }
 
 /**
- * Parse an SVG string to extract path and viewBox information using svgson
+ * Parse an SVG string to extract path using svgson
  * @param svgContent SVG content
  * @param name SVG name
- * @returns Object containing path and viewBox information
+ * @returns path string
  */
-async function parseSvg(
-    svgContent: string,
-    name: string,
-): Promise<{ path: string; viewBox: { minX: number; minY: number; width: number; height: number } } | null> {
+async function parseSvg(svgContent: string, name: string): Promise<string | null> {
     try {
-        // Parse SVG to JSON using svgson
         const svgJson = await svgsonParse(svgContent);
 
-        // Extract viewBox
-        const viewBoxStr = svgJson.attributes.viewBox || "0 0 1000 1000";
-        const [minX, minY, width, height] = viewBoxStr.split(" ").map(Number);
-
-        // Process all SVG elements to paths
         const paths: string[] = [];
 
         // Recursive function to process all elements
@@ -145,13 +144,7 @@ async function parseSvg(
             return null;
         }
 
-        // Combine all paths
-        const combinedPath = paths.join(" ");
-
-        return {
-            path: combinedPath,
-            viewBox: { minX, minY, width, height },
-        };
+        return paths.join(" ");
     } catch (error) {
         console.error(`Error parsing SVG ${name}:`, error);
         return null;
@@ -186,13 +179,9 @@ async function generateSvgFont(
         path: string;
         name: string;
         unicode: string;
-        width: number;
-        height: number;
-        viewBox: { minX: number; minY: number; width: number; height: number };
     }>,
     opt: SvgFontParameters,
 ): Promise<string> {
-    // Create SVG font structure as JSON
     const svgFontJson = element(
         "svg",
         {
@@ -204,11 +193,7 @@ async function generateSvgFont(
             {},
             element(
                 "font",
-                {
-                    id: "custom-font",
-                    "horiz-adv-x": opt.horiz_adv_x.toString(),
-                    "vert-adv-y": opt.vert_adv_y.toString(),
-                },
+                {},
                 element("font-face", {
                     "font-family": opt.font_family,
                     "units-per-em": opt.units_per_em.toString(),
@@ -216,50 +201,31 @@ async function generateSvgFont(
                     descent: opt.descent.toString(),
                 }),
                 element("missing-glyph", {
-                    "horiz-adv-x": opt.horiz_adv_x.toString(),
-                    "vert-adv-y": opt.vert_adv_y.toString(),
+                    "horiz-adv-x": opt.units_per_em.toString(),
+                    "vert-adv-y": opt.units_per_em.toString(),
                 }),
             ),
         ),
     );
 
-    // Font element reference for easier access
     const fontElement = svgFontJson.children[0].children[0];
 
-    // Add each glyph to the font
     for (const glyph of glyphs) {
-        try {
-            // Transform path for correct font orientation
-            const transformedPath = transformSvgPath(glyph.path);
+        const transformed_path = normalizeSvgPath(glyph.path, opt.units_per_em, opt.offset_y, opt.height_decrese);
 
-            // Create glyph element
-            const glyphElement = element("glyph", {
-                "glyph-name": glyph.name,
-                unicode: glyph.unicode,
-                "horiz-adv-x": glyph.width.toString(),
-                d: transformedPath,
-            });
+        const glyphElement = element("glyph", {
+            "glyph-name": glyph.name,
+            unicode: glyph.unicode,
+            "horiz-adv-x": transformed_path.width.toString(),
+            "vert-adv-y": opt.units_per_em.toString(),
+            d: transformed_path.path,
+        });
 
-            // Add glyph to font
-            fontElement.children.push(glyphElement);
-        } catch (error) {
-            console.error(`Error processing glyph ${glyph.name}:`, error);
-            // Add glyph with original path as fallback
-            const fallbackGlyphElement = element("glyph", {
-                "glyph-name": glyph.name,
-                unicode: glyph.unicode,
-                "horiz-adv-x": glyph.width.toString(),
-                d: glyph.path,
-            });
-
-            fontElement.children.push(fallbackGlyphElement);
-        }
+        fontElement.children.push(glyphElement);
     }
 
-    // Convert JSON back to SVG string
     const svgString = svgsonStringify(svgFontJson);
 
-    // Add XML declaration and DOCTYPE
     const xmlDeclaration = '<?xml version="1.0" standalone="no"?>\n';
     const doctype =
         '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n';
@@ -273,10 +239,10 @@ async function generateSvgFont(
  * @returns CSS string
  */
 export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
-    const { font_family, vertical_align, font_url, unicode_base } = opt;
+    const { font_family, font_url, unicode_base } = opt;
 
     let css = `@font-face { font-family: '${font_family}'; font-style: normal; font-weight: 400; font-display: block; src: url("${font_url}") format("woff2"); }
-@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: ${vertical_align}; } }
+@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; } }
 @layer font { .hf::before { content: var(--hf); } }
 `;
 

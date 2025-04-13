@@ -45,11 +45,11 @@ const svgs = [
 const options = {
   svg_font_opt: {
     font_family: "my-icons",
-    ascent: 460,
-    descent: -74,
+    ascent: 592,
+    descent: 160,
     units_per_em: 512,
-    horiz_adv_x: 641,
-    vert_adv_y: 641
+    offset_y: -16,
+    height_decrese: 128,
   },
   ttf_font_opt: {
     version: "1.0",
@@ -64,7 +64,6 @@ const woff2Buffer = await svg2woff2(svgs, options);
 // Generate corresponding CSS
 const css = generateCss(svgs, {
   font_family: "my-icons",
-  vertical_align: "-.125em",
   font_url: "my-icons.woff2"
 });
 
@@ -105,8 +104,8 @@ const svg_font_opt: SvgFontParameters = {
   ascent: 460,
   descent: -74,
   units_per_em: 512,
-  horiz_adv_x: 641,
-  vert_adv_y: 641,
+  offset_y: -16,
+  height_decrese: 128,
 };
 
 const ttf_font_opt: TtfFontParameters = {
@@ -117,7 +116,6 @@ const ttf_font_opt: TtfFontParameters = {
 
 const css_opt: GenerateCssOptions = {
   font_family: svg_font_opt.font_family,
-  vertical_align: "-.125em",
   font_url: "custom-icons.woff2",
 };
 
@@ -171,12 +169,12 @@ interface Svg {
 
 ```typescript
 interface SvgFontParameters {
-  font_family: string;  // Font family name
-  ascent: number;       // Font ascent
-  descent: number;      // Font descent
-  horiz_adv_x: number;  // Horizontal advance
-  vert_adv_y: number;   // Vertical advance
-  units_per_em: number; // Font units per em
+  font_family: string;   // Font family name
+  ascent: number;        // Font ascent
+  descent: number;       // Font descent
+  units_per_em: number;  // Font units per em
+  offset_y: number;      // Horizontal offset(unit) of final glyph
+  hight_decrese: number; // Hight(unit) decresed from units_per_em
 }
 ```
 
@@ -195,7 +193,6 @@ interface TtfFontParameters {
 ```typescript
 interface GenerateCssOptions {
   font_family: string;    // Font family name
-  vertical_align: string; // Vertical alignment
   font_url: string;       // URL to the WOFF2 font file
   unicode_base?: number;  // Starting Unicode codepoint (default: 0xe000)
 }
