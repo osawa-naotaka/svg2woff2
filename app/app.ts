@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { cwd } from "node:process";
@@ -17,22 +17,13 @@ const svgs = svg_files.map((name) => {
 });
 
 // convert to woff2
-const svg_font_opt_brands: SvgFontParameters = {
+const svg_font_opt: SvgFontParameters = {
     font_family: "hanabi brands",
-    ascent: 460,
-    descent: -74,
+    ascent: 592,
+    descent: 160,
     units_per_em: 512,
-    horiz_adv_x: 641,
-    vert_adv_y: 641,
-};
-
-const svg_font_opt_solid: SvgFontParameters = {
-    font_family: "hanabi solid",
-    ascent: 459,
-    descent: -75,
-    units_per_em: 512,
-    horiz_adv_x: 640,
-    vert_adv_y: 640,
+    offset_y: -16,
+    height_decrese: 128,
 };
 
 const ttf_font_opt: TtfFontParameters = {
@@ -42,12 +33,11 @@ const ttf_font_opt: TtfFontParameters = {
 };
 
 const css_opt: GenerateCssOptions = {
-    font_family: svg_font_opt_brands.font_family,
-    vertical_align: "-.125em",
+    font_family: svg_font_opt.font_family,
     font_url: "hf-builtin-400.woff2",
 };
 
-const woff2 = await svg2woff2(svgs, { svg_font_opt: svg_font_opt_brands, ttf_font_opt });
+const woff2 = await svg2woff2(svgs, { svg_font_opt: svg_font_opt, ttf_font_opt });
 const css = generateCss(svgs, css_opt);
 
 console.log(`generateWoff2(): Buffer size = ${woff2.length}`);
@@ -56,7 +46,7 @@ console.log("Generated CSS:", css);
 
 // write to files
 const output_dir = path.join(cwd(), "build");
-if(existsSync(output_dir) === false) {
+if (existsSync(output_dir) === false) {
     mkdirSync(output_dir);
 }
 writeFileSync(path.join(output_dir, "hf-builtin-400.woff2"), woff2);
