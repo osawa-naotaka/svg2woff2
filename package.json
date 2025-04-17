@@ -16,6 +16,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx ./app/app.ts",
+    "analyze": "tsx ./app/analyze.ts",
     "watch": "tsx watch ./app/app.ts",
     "build": "tsc && tsup --config tsup.config.ts",
     "check": "biome check ./src ./types ./app",
@@ -26,7 +27,9 @@
     "@biomejs/biome": "1.9.4",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@types/node": "^22.14.0",
+    "@types/opentype.js": "^1",
     "@types/svg2ttf": "^5.0.3",
+    "opentype.js": "^1.3.4",
     "tsup": "^8.4.0",
     "tsx": "^4.19.3",
     "ttf2svg": "^1.2.0",
