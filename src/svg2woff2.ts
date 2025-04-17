@@ -1,7 +1,7 @@
 import elementToPath from "element-to-path";
 import SVGPathCommander from "svg-path-commander";
 import type { TransformObject } from "svg-path-commander";
-import svg2ttf from "svg2ttf";
+import svg2ttf_lib from "svg2ttf";
 import { parse as svgsonParse, stringify as svgsonStringify } from "svgson";
 import type { INode } from "svgson";
 import ttf2woff2 from "ttf2woff2";
@@ -30,6 +30,7 @@ export interface GenerateCssOptions {
     font_family: string;
     font_url: string;
     unicode_base?: number;
+    vertical_align: string;
 }
 
 export interface Svg {
@@ -239,10 +240,10 @@ async function generateSvgFont(
  * @returns CSS string
  */
 export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
-    const { font_family, font_url, unicode_base } = opt;
+    const { font_family, font_url, unicode_base, vertical_align } = opt;
 
     let css = `@font-face { font-family: '${font_family}'; font-style: normal; font-weight: 400; font-display: block; src: url("${font_url}") format("woff2"); }
-@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; } }
+@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: ${vertical_align}; } }
 @layer font { .hf::before { content: var(--hf); } }
 `;
 
@@ -256,21 +257,32 @@ export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
 }
 
 /**
- * Convert SVG strings to WOFF2 and generate CSS
+ * Convert SVG strings to WOFF2
  * @param svgs Array of SVG strings
  * @param opt Options for conversion
  * @returns Object containing WOFF2 buffer
  */
 export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffer> {
+    const ttfBuffer = await svg2ttf(svgs, opt);
+
+    // Step 3: Convert TTF to WOFF2
+    const woff2Buffer = ttf2woff2(ttfBuffer);
+
+    return woff2Buffer;
+}
+
+/**
+ * Convert SVG strings to TTF
+ * @param svgs Array of SVG strings
+ * @param opt Options for conversion
+ * @returns Object containing TTF buffer
+ */
+export async function svg2ttf(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffer> {
     // Step 1: Convert SVG strings to SVG font
     const svgFontString = await svgsToSvgFont(svgs, opt.svg_font_opt);
 
     // Step 2: Convert SVG font to TTF
-    const ttfBuffer = svg2ttf(svgFontString, opt.ttf_font_opt).buffer;
+    const ttfBuffer = svg2ttf_lib(svgFontString, opt.ttf_font_opt).buffer;
 
-    // Step 3: Convert TTF to WOFF2
-    const ttfBufferForWoff2 = Buffer.from(ttfBuffer);
-    const woff2Buffer = ttf2woff2(ttfBufferForWoff2);
-
-    return Buffer.from(woff2Buffer);
+    return Buffer.from(ttfBuffer);
 }
