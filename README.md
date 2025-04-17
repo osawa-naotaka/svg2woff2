@@ -45,16 +45,17 @@ const svgs = [
 const options = {
   svg_font_opt: {
     font_family: "my-icons",
-    ascent: 592,
-    descent: 160,
+    ascent: 512,
+    descent: 0,
     units_per_em: 512,
-    offset_y: -16,
-    height_decrese: 128,
+    offset_y: 0,
+    height_decrese: 0,
   },
   ttf_font_opt: {
     version: "1.0",
     description: "My custom icon font",
-    url: "https://example.com"
+    url: "https://example.com",
+    vertical_align: "-0.125em",
   }
 };
 
@@ -101,11 +102,11 @@ const svgs = svg_files.map((name) => {
 // Configure font parameters
 const svg_font_opt: SvgFontParameters = {
   font_family: "custom-brands",
-  ascent: 460,
-  descent: -74,
+  ascent: 0,
+  descent: 512,
   units_per_em: 512,
-  offset_y: -16,
-  height_decrese: 128,
+  offset_y: 0,
+  height_decrese: 0,
 };
 
 const ttf_font_opt: TtfFontParameters = {
@@ -117,6 +118,7 @@ const ttf_font_opt: TtfFontParameters = {
 const css_opt: GenerateCssOptions = {
   font_family: svg_font_opt.font_family,
   font_url: "custom-icons.woff2",
+  vertical_align: "-0.125em",
 };
 
 // Generate WOFF2 font and CSS
@@ -182,9 +184,9 @@ interface SvgFontParameters {
 
 ```typescript
 interface TtfFontParameters {
-  version: string;      // Font version
-  description: string;  // Font description
-  url: string;          // Font homepage URL
+  version: string;        // Font version
+  description: string;    // Font description
+  url: string;            // Font homepage URL
 }
 ```
 
@@ -195,6 +197,7 @@ interface GenerateCssOptions {
   font_family: string;    // Font family name
   font_url: string;       // URL to the WOFF2 font file
   unicode_base?: number;  // Starting Unicode codepoint (default: 0xe000)
+  vertical_align: string; // Font vertical alignment
 }
 ```
 
