@@ -20,16 +20,11 @@ const svgs = svg_files.map((name) => {
 // convert to woff2
 const svg_font_opt: SvgFontParameters = {
     font_family: "hanabi brands",
-    ascent: 460,
-    descent: -74,
+    ascent: 512,
+    descent: 0,
     units_per_em: 512,
-    offset_y: -48,
-    height_decrese: 32,
-    // ascent: 592,
-    // descent: 160,
-    // units_per_em: 512,
-    // offset_y: -16,
-    // height_decrese: 128,
+    offset_y: 0,
+    height_decrese: 0,
 };
 
 const ttf_font_opt: TtfFontParameters = {
@@ -41,6 +36,7 @@ const ttf_font_opt: TtfFontParameters = {
 const css_opt: GenerateCssOptions = {
     font_family: svg_font_opt.font_family,
     font_url: "hf-builtin-400.woff2",
+    vertical_align: "-0.125em",
 };
 
 const ttf = await svg2ttf(svgs, { svg_font_opt: svg_font_opt, ttf_font_opt });
@@ -58,5 +54,4 @@ if (existsSync(output_dir) === false) {
 }
 writeFileSync(path.join(output_dir, "hf-builtin-400.ttf"), ttf);
 writeFileSync(path.join(output_dir, "hf-builtin-400.woff2"), woff2);
-writeFileSync(path.join(output_dir, css_opt.font_url), woff2);
 writeFileSync(path.join(output_dir, "font.css"), css);

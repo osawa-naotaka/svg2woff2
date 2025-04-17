@@ -30,6 +30,7 @@ export interface GenerateCssOptions {
     font_family: string;
     font_url: string;
     unicode_base?: number;
+    vertical_align: string;
 }
 
 export interface Svg {
@@ -239,10 +240,10 @@ async function generateSvgFont(
  * @returns CSS string
  */
 export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
-    const { font_family, font_url, unicode_base } = opt;
+    const { font_family, font_url, unicode_base, vertical_align } = opt;
 
     let css = `@font-face { font-family: '${font_family}'; font-style: normal; font-weight: 400; font-display: block; src: url("${font_url}") format("woff2"); }
-@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: -.125em; } }
+@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: ${vertical_align}; } }
 @layer font { .hf::before { content: var(--hf); } }
 `;
 
