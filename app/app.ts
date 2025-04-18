@@ -20,11 +20,6 @@ const svgs = svg_files.map((name) => {
 // convert to woff2
 const svg_font_opt: SvgFontParameters = {
     font_family: "hanabi brands",
-    ascent: 512,
-    descent: 0,
-    units_per_em: 512,
-    offset_y: 0,
-    height_decrese: 0,
 };
 
 const ttf_font_opt: TtfFontParameters = {
