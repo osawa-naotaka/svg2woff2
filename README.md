@@ -68,8 +68,8 @@ const woff2Buffer = await svg2woff2(svgs, options);
 const css = generateCss(svgs, {
   font_family: "my-icons",
   font_url: "my-icons.woff2",
-  // Optional:
-  // vertical_align: "-0.125em"
+  // Optional: no vertical-align output for css
+  // vertical_align: 
 });
 
 // Write files (if needed)
@@ -206,7 +206,7 @@ interface GenerateCssOptions {
   font_family: string;        // Font family name
   font_url: string;           // URL to the font file
   unicode_base?: number;      // Starting Unicode codepoint (default: 0xe000)
-  vertical_align?: string;    // Font vertical alignment
+  vertical_align?: string;    // Font vertical alignment (default: no alignment)
 }
 ```
 
