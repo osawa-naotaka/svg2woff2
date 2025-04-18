@@ -9,6 +9,7 @@ import ttf2woff2 from "ttf2woff2";
 export interface Svg2Woff2Options {
     ttf_font_opt: TtfFontParameters;
     svg_font_opt: SvgFontParameters;
+    unicode_base?: number;
 }
 
 export interface TtfFontParameters {
@@ -19,18 +20,19 @@ export interface TtfFontParameters {
 
 export interface SvgFontParameters {
     font_family: string;
-    ascent: number;
-    descent: number;
-    units_per_em: number;
-    offset_y: number;
-    height_decrese: number;
+    units_per_em?: number;
+    ascent?: number;
+    descent?: number;
+    offset_y?: number;
+    height_decrese?: number;
+    preserve_viewbox?: boolean;
 }
 
 export interface GenerateCssOptions {
     font_family: string;
     font_url: string;
     unicode_base?: number;
-    vertical_align: string;
+    vertical_align?: string;
 }
 
 export interface Svg {
@@ -38,28 +40,53 @@ export interface Svg {
     content: string;
 }
 
+type ParsedSve = {
+    path: string;
+    view_box?: ViewBox;
+};
+
+type Glyph = {
+    name: string;
+    unicode: string;
+    svg: ParsedSve;
+};
+
+type ViewBox = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+};
+
+type NormalizedSvgPath = {
+    path: string;
+    width: number;
+};
+
+const default_unicode_base = 0xe000;
+
 /**
  * Convert SVG strings to SVG font
  * @param svgs Array of SVG strings
  * @param opt SVG Font metadata
  * @returns SVG font as string
  */
-export async function svgsToSvgFont(svgs: Svg[], opt: SvgFontParameters): Promise<string> {
-    const glyphs: Array<{
-        path: string;
-        name: string;
-        unicode: string;
-    }> = [];
+export async function svgsToSvgFont(
+    svgs: Svg[],
+    opt: Required<SvgFontParameters>,
+    unicode_base: number,
+): Promise<string> {
+    const glyphs: Glyph[] = [];
 
     for (let i = 0; i < svgs.length; i++) {
-        const svgPath = await parseSvg(svgs[i].content, svgs[i].name);
-        if (svgPath) {
-            const unicodeChar = String.fromCodePoint(0xe000 + i);
+        const parsed_svg = await parseSvg(svgs[i].content, svgs[i].name);
+        if (parsed_svg) {
+            const unicodeChar = String.fromCodePoint(unicode_base + i);
 
             glyphs.push({
-                path: svgPath,
                 name: svgs[i].name,
                 unicode: unicodeChar,
+                svg: parsed_svg,
             });
         }
     }
@@ -73,15 +100,11 @@ export async function svgsToSvgFont(svgs: Svg[], opt: SvgFontParameters): Promis
  * @param height SVG path hight to scale
  * @returns Normalized path and its width
  */
-type NormalizedSvgPath = {
-    path: string;
-    width: number;
-};
+function normalizeSvgPath(glyph: Glyph, opt: Required<SvgFontParameters>): NormalizedSvgPath {
+    const fliped = new SVGPathCommander(glyph.svg.path).flipY();
 
-function normalizeSvgPath(path: string, height: number, offset_y: number, height_decrese: number): NormalizedSvgPath {
-    const fliped = new SVGPathCommander(path).flipY();
-    const size = fliped.getBBox();
-    const scale_y = (height - height_decrese) / size.height;
+    const size: ViewBox = opt.preserve_viewbox && glyph.svg.view_box ? glyph.svg.view_box : fliped.getBBox();
+    const scale_y = (opt.units_per_em - opt.height_decrese) / size.height;
     const translate: Partial<TransformObject> = {
         translate: [-size.x, -size.y],
     };
@@ -89,7 +112,7 @@ function normalizeSvgPath(path: string, height: number, offset_y: number, height
         scale: [scale_y, scale_y],
     };
     const post_translate: Partial<TransformObject> = {
-        translate: [0, offset_y],
+        translate: [0, opt.offset_y],
     };
 
     const processed = fliped.transform(translate).transform(scale).transform(post_translate);
@@ -107,11 +130,12 @@ function normalizeSvgPath(path: string, height: number, offset_y: number, height
  * @param name SVG name
  * @returns path string
  */
-async function parseSvg(svgContent: string, name: string): Promise<string | null> {
+async function parseSvg(svgContent: string, name: string): Promise<ParsedSve | null> {
     try {
         const svgJson = await svgsonParse(svgContent);
 
         const paths: string[] = [];
+        let view_box: ViewBox | null = null;
 
         // Recursive function to process all elements
         function processElements(node: INode) {
@@ -125,6 +149,11 @@ async function parseSvg(svgContent: string, name: string): Promise<string | null
                     const pathData = elementToPath(node);
                     if (pathData) {
                         paths.push(pathData);
+                    }
+                } else if (node.name === "svg" && node.attributes.viewBox) {
+                    const vb = node.attributes.viewBox.split(" ").map((v) => Number.parseInt(v));
+                    if (vb.length === 4) {
+                        view_box = { x: vb[0], y: vb[1], width: vb[2], height: vb[3] };
                     }
                 }
 
@@ -145,7 +174,7 @@ async function parseSvg(svgContent: string, name: string): Promise<string | null
             return null;
         }
 
-        return paths.join(" ");
+        return view_box !== null ? { path: paths.join(" "), view_box } : { path: paths.join(" ") };
     } catch (error) {
         console.error(`Error parsing SVG ${name}:`, error);
         return null;
@@ -175,14 +204,7 @@ function element(e_name: string, attributes: Record<string, string>, ...children
  * @param opt SVG Font metadata
  * @returns SVG font as string
  */
-async function generateSvgFont(
-    glyphs: Array<{
-        path: string;
-        name: string;
-        unicode: string;
-    }>,
-    opt: SvgFontParameters,
-): Promise<string> {
+async function generateSvgFont(glyphs: Glyph[], opt: Required<SvgFontParameters>): Promise<string> {
     const svgFontJson = element(
         "svg",
         {
@@ -212,7 +234,7 @@ async function generateSvgFont(
     const fontElement = svgFontJson.children[0].children[0];
 
     for (const glyph of glyphs) {
-        const transformed_path = normalizeSvgPath(glyph.path, opt.units_per_em, opt.offset_y, opt.height_decrese);
+        const transformed_path = normalizeSvgPath(glyph, opt);
 
         const glyphElement = element("glyph", {
             "glyph-name": glyph.name,
@@ -243,13 +265,13 @@ export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
     const { font_family, font_url, unicode_base, vertical_align } = opt;
 
     let css = `@font-face { font-family: '${font_family}'; font-style: normal; font-weight: 400; font-display: block; src: url("${font_url}") format("woff2"); }
-@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; vertical-align: ${vertical_align}; } }
+@layer font { .hf { font-family: '${font_family}'; font-style: normal; font-weight: normal; ${vertical_align ? `vertical-align: ${vertical_align}; ` : ""}} }
 @layer font { .hf::before { content: var(--hf); } }
 `;
 
     // Add CSS for each glyph
     svgs.forEach((svg, index) => {
-        const unicodePoint = (unicode_base || 0xe000) + index;
+        const unicodePoint = (unicode_base || default_unicode_base) + index;
         css += `@layer font { .hf-${svg.name} { --hf: "\\${unicodePoint.toString(16)}"; } }\n`;
     });
 
@@ -264,8 +286,6 @@ export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
  */
 export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffer> {
     const ttfBuffer = await svg2ttf(svgs, opt);
-
-    // Step 3: Convert TTF to WOFF2
     const woff2Buffer = ttf2woff2(ttfBuffer);
 
     return woff2Buffer;
@@ -278,10 +298,19 @@ export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buf
  * @returns Object containing TTF buffer
  */
 export async function svg2ttf(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffer> {
-    // Step 1: Convert SVG strings to SVG font
-    const svgFontString = await svgsToSvgFont(svgs, opt.svg_font_opt);
+    // default values
+    const units_per_em = opt.svg_font_opt.units_per_em || 1024;
+    const required: Required<SvgFontParameters> = {
+        font_family: opt.svg_font_opt.font_family,
+        units_per_em,
+        ascent: opt.svg_font_opt.ascent || units_per_em,
+        descent: opt.svg_font_opt.descent || 0,
+        offset_y: opt.svg_font_opt.offset_y || 0,
+        height_decrese: opt.svg_font_opt.height_decrese || 0,
+        preserve_viewbox: opt.svg_font_opt.preserve_viewbox || true,
+    };
 
-    // Step 2: Convert SVG font to TTF
+    const svgFontString = await svgsToSvgFont(svgs, required, opt.unicode_base || default_unicode_base);
     const ttfBuffer = svg2ttf_lib(svgFontString, opt.ttf_font_opt).buffer;
 
     return Buffer.from(ttfBuffer);

@@ -12,6 +12,7 @@ A lightweight TypeScript library for bundling SVG icons into WOFF2 fonts. Simple
 - **No File I/O Dependencies**: Works with strings and buffers, allowing integration with any I/O system
 - **Full TypeScript Support**: Complete type definitions for a seamless development experience
 - **CSS Generation**: Automatically generates CSS for using your custom icons
+- **ViewBox Preservation**: Option to maintain the original SVG viewBox dimensions
 
 ## Installation
 
@@ -45,11 +46,13 @@ const svgs = [
 const options = {
   svg_font_opt: {
     font_family: "my-icons",
-    ascent: 592,
-    descent: 160,
-    units_per_em: 512,
-    offset_y: -16,
-    height_decrese: 128,
+    // Optional parameters with defaults:
+    // units_per_em: 1024,
+    // ascent: 1024,
+    // descent: 0,
+    // offset_y: 0,
+    // height_decrese: 0,
+    // preserve_viewbox: true
   },
   ttf_font_opt: {
     version: "1.0",
@@ -64,7 +67,9 @@ const woff2Buffer = await svg2woff2(svgs, options);
 // Generate corresponding CSS
 const css = generateCss(svgs, {
   font_family: "my-icons",
-  font_url: "my-icons.woff2"
+  font_url: "my-icons.woff2",
+  // Optional:
+  // vertical_align: "-0.125em" // If not specified, no CSS vertical-align property will be set
 });
 
 // Write files (if needed)
@@ -98,14 +103,9 @@ const svgs = svg_files.map((name) => {
   return { name, content };
 });
 
-// Configure font parameters
+// Configure font parameters - only font_family is required
 const svg_font_opt: SvgFontParameters = {
   font_family: "custom-brands",
-  ascent: 460,
-  descent: -74,
-  units_per_em: 512,
-  offset_y: -16,
-  height_decrese: 128,
 };
 
 const ttf_font_opt: TtfFontParameters = {
@@ -117,6 +117,7 @@ const ttf_font_opt: TtfFontParameters = {
 const css_opt: GenerateCssOptions = {
   font_family: svg_font_opt.font_family,
   font_url: "custom-icons.woff2",
+  vertical_align: "-0.125em",
 };
 
 // Generate WOFF2 font and CSS
@@ -145,6 +146,15 @@ Converts SVG icons to a WOFF2 font.
   - `options`: Configuration object with `svg_font_opt` and `ttf_font_opt`
 - **Returns**: Promise resolving to a Buffer containing the WOFF2 font data
 
+#### `svg2ttf(svgs, options)`
+
+Converts SVG icons to a TTF font.
+
+- **Parameters**:
+  - `svgs`: Array of `Svg` objects containing `name` and `content`
+  - `options`: Configuration object with `svg_font_opt` and `ttf_font_opt`
+- **Returns**: Promise resolving to a Buffer containing the TTF font data
+
 #### `generateCss(svgs, options)`
 
 Generates CSS for using the generated font with class names.
@@ -169,12 +179,13 @@ interface Svg {
 
 ```typescript
 interface SvgFontParameters {
-  font_family: string;   // Font family name
-  ascent: number;        // Font ascent
-  descent: number;       // Font descent
-  units_per_em: number;  // Font units per em
-  offset_y: number;      // Horizontal offset(unit) of final glyph
-  hight_decrese: number; // Hight(unit) decresed from units_per_em
+  font_family: string;         // Font family name (required)
+  units_per_em?: number;       // Font units per em (default: 1024)
+  ascent?: number;             // Font ascent (default: units_per_em)
+  descent?: number;            // Font descent (default: 0)
+  offset_y?: number;           // Vertical offset(unit) of final glyph (default: 0)
+  height_decrese?: number;     // Height(unit) decreased from units_per_em (default: 0)
+  preserve_viewbox?: boolean;  // Whether to preserve the original SVG viewBox (default: true)
 }
 ```
 
@@ -182,9 +193,9 @@ interface SvgFontParameters {
 
 ```typescript
 interface TtfFontParameters {
-  version: string;      // Font version
-  description: string;  // Font description
-  url: string;          // Font homepage URL
+  version: string;        // Font version
+  description: string;    // Font description
+  url: string;            // Font homepage URL
 }
 ```
 
@@ -192,9 +203,10 @@ interface TtfFontParameters {
 
 ```typescript
 interface GenerateCssOptions {
-  font_family: string;    // Font family name
-  font_url: string;       // URL to the WOFF2 font file
-  unicode_base?: number;  // Starting Unicode codepoint (default: 0xe000)
+  font_family: string;        // Font family name
+  font_url: string;           // URL to the font file
+  unicode_base?: number;      // Starting Unicode codepoint (default: 0xe000)
+  vertical_align?: string;    // Font vertical alignment (if not specified, no vertical-align CSS property will be set)
 }
 ```
 
@@ -204,6 +216,7 @@ interface GenerateCssOptions {
 interface Svg2Woff2Options {
   ttf_font_opt: TtfFontParameters;
   svg_font_opt: SvgFontParameters;
+  unicode_base?: number;      // Starting Unicode codepoint (default: 0xe000)
 }
 ```
 
@@ -213,7 +226,13 @@ interface Svg2Woff2Options {
 2. Paths are transformed to adapt to font metrics
 3. An SVG font is created from the path data
 4. The SVG font is converted to TTF
-5. The TTF font is compressed to WOFF2
+5. The TTF font is compressed to WOFF2 (for woff2 output)
+
+### ViewBox Preservation
+
+When `preserve_viewbox` is set to `true` (default), the library will use the original SVG viewBox dimensions for scaling and positioning the glyph. This maintains the proportions and aspect ratio of the original SVG.
+
+If set to `false` or if no viewBox is present, the library will calculate the bounding box of the path and use that for scaling.
 
 ## Browser Usage
 

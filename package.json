@@ -1,6 +1,6 @@
 {
   "name": "svg2woff2",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "generate woff2 font from svg files",
   "main": "dist/svg2woff2.js",
   "types": "dist/svg2woff2.d.ts",
@@ -8,7 +8,7 @@
     "name": "osawa naotaka"
   },
   "license": "MIT",
-  "homepage": "https://svg2woff2.lulliecat.com",
+  "homepage": "https://github.com/osawa-naotaka/svg2woff2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/osawa-naotaka/svg2woff2.git"
