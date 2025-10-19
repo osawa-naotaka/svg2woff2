@@ -35,7 +35,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@lulliecat/svg2ttf": "^6.0.4",
+    "@lulliecat/svg2ttf": "^6.0.5",
     "element-to-path": "^1.2.1",
     "svg-path-commander": "^2.1.11",
     "svgson": "^5.3.1",

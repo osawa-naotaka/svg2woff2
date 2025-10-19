@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- svg2ttfに起因するバグがあり、修正するためにsvg2ttfをupdateした。
+
 ## [0.3.3] - 2025-10-19
 ### Fixed
 - Fixed import statement to use `@lulliecat/svg2ttf` instead of `svg2ttf`.
