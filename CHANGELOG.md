@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.4] - 2025-10-20
+### Added
+- Added `svg2svgfont` function to generate SVG font output.
+- Added `ts` (timestamp) parameter to `TtfFontParameters` for reproducible binary TTF generation.
+
+### Changed
+- Updated `@lulliecat/svg2ttf` from 6.0.4 to 6.0.5 to fix bugs.
+
 ## [0.3.3] - 2025-10-19
 ### Fixed
 - Fixed import statement to use `@lulliecat/svg2ttf` instead of `svg2ttf`.
@@ -49,7 +57,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First Implementation.
 
-[Unreleased]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.4...HEAD
+[0.3.4]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.0...v0.3.1

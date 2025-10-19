@@ -16,6 +16,7 @@ export interface TtfFontParameters {
     version: string;
     description: string;
     url: string;
+    ts: number;
 }
 
 export interface SvgFontParameters {
@@ -314,4 +315,20 @@ export async function svg2ttf(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffe
     const ttfBuffer = svg2ttf_lib(svgFontString, opt.ttf_font_opt).buffer;
 
     return Buffer.from(ttfBuffer);
+}
+
+export async function svg2svgfont(svgs: Svg[], opt: Svg2Woff2Options): Promise<string> {
+    // default values
+    const units_per_em = opt.svg_font_opt.units_per_em || 1024;
+    const required: Required<SvgFontParameters> = {
+        font_family: opt.svg_font_opt.font_family,
+        units_per_em,
+        ascent: opt.svg_font_opt.ascent || units_per_em,
+        descent: opt.svg_font_opt.descent || 0,
+        offset_y: opt.svg_font_opt.offset_y || 0,
+        height_decrese: opt.svg_font_opt.height_decrese || 0,
+        preserve_viewbox: opt.svg_font_opt.preserve_viewbox || true,
+    };
+
+    return await svgsToSvgFont(svgs, required, opt.unicode_base || default_unicode_base);
 }
