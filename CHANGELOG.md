@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Security: in case of vulnerabilities.
 
 ## [Unreleased]
+
+## 0.3.1
+
+- 使用ライブラリのヴァージョンアップデート
+
 ## [0.3.0] - 2025-04-18
 ### Added
 - default argument value is added.
