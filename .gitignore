@@ -20,3 +20,4 @@ dist
 build
 
 .direnv
+svg2woff2-*.tgz

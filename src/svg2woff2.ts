@@ -1,4 +1,4 @@
-import elementToPath from "element-to-path";
+const elementToPath = require("element-to-path");
 import type { TransformObject } from "svg-path-commander";
 import SVGPathCommander from "svg-path-commander";
 import svg2ttf_lib from "@lulliecat/svg2ttf";
