@@ -1,5 +1,7 @@
 /.vscode
 /.yarn
+/.direnv
+/.github
 /app
 /build
 /node_modules
@@ -7,10 +9,13 @@
 /types
 .editorconfig
 .gitattributes
+.gitignore
 .pnp*
 biome.json
+.envrc
 bun.lock
 flake.nix
 flake.lock
 tsconfig.json
 tsup.config.ts
+yarn.lock
