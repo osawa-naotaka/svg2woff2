@@ -1,9 +1,0 @@
-{
-  "files.insertFinalNewline": true,
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "search.exclude": {
-    "**/.yarn": true,
-    "**/.pnp.*": true
-  },
-  "typescript.enablePromptUseWorkspaceTsdk": true
-}
