@@ -4,7 +4,7 @@ import path from "node:path";
 import { cwd } from "node:process";
 import { generateCss, svg2woff2 } from "../src/main";
 import type { GenerateCssOptions, SvgFontParameters, TtfFontParameters } from "../src/main";
-import { svg2ttf } from "../src/svg2woff2";
+import { svg2svgfont, svg2ttf } from "../src/svg2woff2";
 
 const require = createRequire(import.meta.url);
 
@@ -35,6 +35,7 @@ const css_opt: GenerateCssOptions = {
     vertical_align: "-0.125em",
 };
 
+const svgfont = await svg2svgfont(svgs, { svg_font_opt: svg_font_opt, ttf_font_opt });
 const ttf = await svg2ttf(svgs, { svg_font_opt: svg_font_opt, ttf_font_opt });
 const woff2 = await svg2woff2(svgs, { svg_font_opt: svg_font_opt, ttf_font_opt });
 const css = generateCss(svgs, css_opt);
@@ -48,6 +49,7 @@ const output_dir = path.join(cwd(), "build");
 if (existsSync(output_dir) === false) {
     mkdirSync(output_dir);
 }
+writeFileSync(path.join(output_dir, "hf-builtin-400.svg"), svgfont);
 writeFileSync(path.join(output_dir, "hf-builtin-400.ttf"), ttf);
 writeFileSync(path.join(output_dir, "hf-builtin-400.woff2"), woff2);
 writeFileSync(path.join(output_dir, "font.css"), css);
