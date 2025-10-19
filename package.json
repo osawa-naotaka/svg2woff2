@@ -1,6 +1,6 @@
 {
   "name": "svg2woff2",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "generate woff2 font from svg files",
   "main": "dist/svg2woff2.js",
   "types": "dist/svg2woff2.d.ts",
@@ -24,22 +24,22 @@
   },
   "packageManager": "yarn@4.8.0",
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@fortawesome/fontawesome-free": "^6.7.2",
-    "@types/node": "^22.14.0",
-    "@types/opentype.js": "^1",
+    "@biomejs/biome": "2.2.6",
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@types/node": "^24.8.1",
+    "@types/opentype.js": "^1.3.8",
     "@types/svg2ttf": "^5.0.3",
     "opentype.js": "^1.3.4",
-    "tsup": "^8.4.0",
-    "tsx": "^4.19.3",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
     "ttf2svg": "^1.2.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "element-to-path": "^1.2.1",
-    "svg-path-commander": "^2.1.10",
+    "svg-path-commander": "^2.1.11",
     "svg2ttf": "^6.0.3",
     "svgson": "^5.3.1",
-    "ttf2woff2": "^6.0.1"
+    "ttf2woff2": "^8.0.0"
   }
 }

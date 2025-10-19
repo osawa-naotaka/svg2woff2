@@ -1,9 +1,9 @@
 import elementToPath from "element-to-path";
-import SVGPathCommander from "svg-path-commander";
 import type { TransformObject } from "svg-path-commander";
+import SVGPathCommander from "svg-path-commander";
 import svg2ttf_lib from "svg2ttf";
-import { parse as svgsonParse, stringify as svgsonStringify } from "svgson";
 import type { INode } from "svgson";
+import { parse as svgsonParse, stringify as svgsonStringify } from "svgson";
 import ttf2woff2 from "ttf2woff2";
 
 export interface Svg2Woff2Options {
@@ -151,7 +151,7 @@ async function parseSvg(svgContent: string, name: string): Promise<ParsedSve | n
                         paths.push(pathData);
                     }
                 } else if (node.name === "svg" && node.attributes.viewBox) {
-                    const vb = node.attributes.viewBox.split(" ").map((v) => Number.parseInt(v));
+                    const vb = node.attributes.viewBox.split(" ").map((v) => Number.parseInt(v, 10));
                     if (vb.length === 4) {
                         view_box = { x: vb[0], y: vb[1], width: vb[2], height: vb[3] };
                     }
