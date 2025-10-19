@@ -13,7 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- includeのバグがあったのを修正
+## [0.3.3] - 2025-10-19
+### Fixed
+- Fixed import statement to use `@lulliecat/svg2ttf` instead of `svg2ttf`.
 
 ## [0.3.2] - 2025-10-19
 ### Changed
@@ -47,7 +49,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First Implementation.
 
-[Unreleased]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.2.1...v0.3.0
