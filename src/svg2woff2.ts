@@ -1,7 +1,7 @@
 import elementToPath from "element-to-path";
 import type { TransformObject } from "svg-path-commander";
 import SVGPathCommander from "svg-path-commander";
-import svg2ttf_lib from "svg2ttf";
+import svg2ttf_lib from "@lulliecat/svg2ttf";
 import type { INode } from "svgson";
 import { parse as svgsonParse, stringify as svgsonStringify } from "svgson";
 import ttf2woff2 from "ttf2woff2";
