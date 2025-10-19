@@ -16,6 +16,7 @@ export interface TtfFontParameters {
     version: string;
     description: string;
     url: string;
+    ts: number;
 }
 
 export interface SvgFontParameters {
