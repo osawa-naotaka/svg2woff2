@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- 使用ライブラリをアップデート
+
 ## [0.3.4] - 2025-10-20
 ### Added
 - Added `svg2svgfont` function to generate SVG font output.
