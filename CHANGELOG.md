@@ -13,7 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- 使用ライブラリをアップデート
+## [0.3.5] - 2025-10-26
+### Changed
+- Updated `@lulliecat/svg2ttf` from 6.0.5 to 6.0.6 to fix bugs.
+- Updated `@types/node` from 24.8.1 to 24.9.1.
 
 ## [0.3.4] - 2025-10-20
 ### Added
@@ -59,7 +62,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First Implementation.
 
-[Unreleased]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.5...HEAD
+[0.3.5]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/osawa-naotaka/svg2woff2/compare/v0.3.1...v0.3.2

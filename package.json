@@ -1,6 +1,6 @@
 {
   "name": "svg2woff2",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "generate woff2 font from svg files",
   "main": "dist/svg2woff2.js",
   "types": "dist/svg2woff2.d.ts",
