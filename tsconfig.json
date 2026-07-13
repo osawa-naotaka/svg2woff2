@@ -19,11 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-
-    "paths": {
-      "@/*": ["./src/*"],
-    },
   },
-  "include": ["*.ts", "types/**/*.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["types/**/*.d.ts"],
 }
