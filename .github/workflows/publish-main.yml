@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -34,10 +35,11 @@ jobs:
       - name: Build project
         run: bun run build
 
+      - name: Ensure npm supports trusted publishing
+        run: npm install -g npm@latest
+
       - name: npm publish
         run: npm publish --provenance --access public --tag latest
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Success
         if: success()
