@@ -285,7 +285,7 @@ export function generateCss(svgs: Svg[], opt: GenerateCssOptions): string {
  * @param opt Options for conversion
  * @returns Object containing WOFF2 buffer
  */
-export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffer> {
+export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<Uint8Array> {
     const ttfBuffer = await svg2ttf(svgs, opt);
     const woff2Buffer = ttf2woff2(ttfBuffer);
 
@@ -298,7 +298,7 @@ export async function svg2woff2(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buf
  * @param opt Options for conversion
  * @returns Object containing TTF buffer
  */
-export async function svg2ttf(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffer> {
+export async function svg2ttf(svgs: Svg[], opt: Svg2Woff2Options): Promise<Uint8Array> {
     // default values
     const units_per_em = opt.svg_font_opt.units_per_em || 1024;
     const required: Required<SvgFontParameters> = {
@@ -314,7 +314,7 @@ export async function svg2ttf(svgs: Svg[], opt: Svg2Woff2Options): Promise<Buffe
     const svgFontString = await svgsToSvgFont(svgs, required, opt.unicode_base || default_unicode_base);
     const ttfBuffer = svg2ttf_lib(svgFontString, opt.ttf_font_opt).buffer;
 
-    return Buffer.from(ttfBuffer);
+    return ttfBuffer;
 }
 
 export async function svg2svgfont(svgs: Svg[], opt: Svg2Woff2Options): Promise<string> {
